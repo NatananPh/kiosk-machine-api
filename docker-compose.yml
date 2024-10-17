@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: kioskmachinedb
+      POSTGRES_SCHEMA: public
+    ports:
+      - "5432:5432"

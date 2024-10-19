@@ -16,12 +16,44 @@ func main() {
 
 	tx := db.Connect().Begin()
 	migrate(tx)
+	addRole(tx)
+	addUser(tx)
 	addProduct(tx)
 
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
 		panic(err)
 	}
+}
+
+func addRole(tx *gorm.DB) error {
+	var roles = []entities.Role{
+		{
+			Name: "Admin",
+		},
+		{
+			Name: "User",
+		},
+	}
+	tx.CreateInBatches(roles, len(roles))
+	return nil
+}
+
+func addUser(tx *gorm.DB) error {
+	var users = []entities.User{
+		{
+			Username: "admin",
+			Password: "admin",
+			RoleID:   1,
+		},
+		{
+			Username: "user",
+			Password: "user",
+			RoleID:   2,
+		},
+	}
+	tx.CreateInBatches(users, len(users))
+	return nil
 }
 
 func addProduct(tx *gorm.DB) error {

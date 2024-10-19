@@ -45,6 +45,7 @@ func NewEchoServer(db *gorm.DB, cfg *config.Config) *echoServer {
 func (s *echoServer) Start() {
 	s.app.GET("/health" , s.healthCheck)
 	s.registerProductRoutes()
+	s.registerUserRoutes()
 
 	quitCh := make(chan os.Signal, 1)
 	signal.Notify(quitCh, syscall.SIGINT, syscall.SIGTERM)

@@ -6,3 +6,8 @@ type Product struct {
 	Price  uint   `json:"price"`
 	Amount uint   `json:"amount"`
 }
+type ProductCreateRequest struct {
+	Name   string `json:"name"`
+	Price  uint   `json:"price"`
+	Amount uint   `json:"amount"`
+}

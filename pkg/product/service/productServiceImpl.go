@@ -16,6 +16,26 @@ func NewProductService(productRepository repository.ProductRepository) ProductSe
 	}
 }
 
+func (p *productServiceImpl) CreateProduct(product model.ProductCreateRequest) (model.Product, error) {
+	productEntity := entities.Product{
+		Name:  product.Name,
+		Price: product.Price,
+		Amount: product.Amount,
+	}
+
+	createdProductEntity, err := p.productRepository.CreateProduct(productEntity)
+	if err != nil {
+		return model.Product{}, err
+	}
+
+	return model.Product{
+		ID:    createdProductEntity.ID,
+		Name:  createdProductEntity.Name,
+		Price: createdProductEntity.Price,
+		Amount: createdProductEntity.Amount,
+	}, nil
+}
+
 func (p *productServiceImpl) GetProducts() ([]model.Product, error) {
 	products, err := p.productRepository.GetProducts()
 	if err != nil {

@@ -20,6 +20,19 @@ func NewProductController(productService service.ProductService) ProductControll
 	}
 }
 
+func (controller *productControllerImpl) CreateProduct(ctx echo.Context) error {
+	var product model.ProductCreateRequest
+	if err := ctx.Bind(&product); err != nil {
+		return custom.Error(ctx, http.StatusBadRequest, err.Error())
+	}
+
+	createdProduct, err := controller.productService.CreateProduct(product)
+	if err != nil {
+		return custom.Error(ctx, http.StatusInternalServerError, err.Error())
+	}
+	return ctx.JSON(http.StatusCreated, createdProduct)
+}
+
 func (controller *productControllerImpl) GetProducts(ctx echo.Context) error {
 	products, err := controller.productService.GetProducts()
 	if err != nil {

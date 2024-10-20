@@ -15,6 +15,13 @@ func NewProductRepository(db *gorm.DB) ProductRepository {
 	}
 }
 
+func (p *productRepositoryImpl) CreateProduct(product entities.Product) (entities.Product, error) {
+	if err := p.db.Create(&product).Error; err != nil {
+		return entities.Product{}, err
+	}
+	return product, nil
+}
+
 func (p *productRepositoryImpl) GetProducts() ([]entities.Product, error) {
 	var products []entities.Product
 	

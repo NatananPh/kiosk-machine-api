@@ -13,3 +13,7 @@ database:
   dbname: kioskmachinedb
   sslmode: disable
   schema: public
+
+auth:
+  secret: "secret"
+  tokenDuration: 1

@@ -10,6 +10,7 @@ import (
 type Config struct {
 	Server   *Server   `mapstructure:"server" validate:"required"`
 	Database *Database `mapstructure:"database" validate:"required"`
+	Auth     *Auth     `mapstructure:"auth" validate:"required"`
 }
 
 type Server struct {
@@ -17,6 +18,11 @@ type Server struct {
 	AllowOrigins []string `mapstructure:"allowOrigins" validate:"required"`
 	BodyLimit    string   `mapstructure:"bodyLimit" validate:"required"`
 	Timeout      int      `mapstructure:"timeout" validate:"required"`
+}
+
+type Auth struct {
+	Secret string `mapstructure:"secret" validate:"required"`
+	TokenDuration int `mapstructure:"tokenDuration" validate:"required"`
 }
 
 type Database struct {

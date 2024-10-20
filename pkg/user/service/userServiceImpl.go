@@ -26,7 +26,7 @@ func (us *UserServiceImpl) GetUsers() ([]model.User, error) {
 			ID:    user.ID,
 			Username:  user.Username,
 			Password: user.Password,
-			
+			RoleID: user.RoleID,
 		})
 	}
 	return modelUsers, nil

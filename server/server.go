@@ -44,6 +44,7 @@ func NewEchoServer(db *gorm.DB, cfg *config.Config) *echoServer {
 
 func (s *echoServer) Start() {
 	s.app.GET("/health" , s.healthCheck)
+	s.registerAuthRoutes()
 	s.registerProductRoutes()
 	s.registerUserRoutes()
 

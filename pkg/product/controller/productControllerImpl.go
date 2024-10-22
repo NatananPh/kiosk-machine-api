@@ -26,7 +26,7 @@ func NewProductController(productService service.ProductService) ProductControll
 func (controller *productControllerImpl) CreateProduct(ctx echo.Context) error {
 	var product model.ProductCreateRequest
 	if err := ctx.Bind(&product); err != nil {
-		return ctx.JSON(http.StatusBadRequest, json.RawMessage(`{"error": "Invalid request body"}`))
+		return ctx.JSON(http.StatusBadRequest, json.RawMessage(`{"error": "Invalid request"}`))
 	}
 
 	createdProduct, err := controller.productService.CreateProduct(&product)
@@ -39,12 +39,12 @@ func (controller *productControllerImpl) CreateProduct(ctx echo.Context) error {
 func (controller *productControllerImpl) GetProducts(ctx echo.Context) error {
 	productFilter := new(model.ProductFilter)
 	if err := ctx.Bind(productFilter); err != nil {
-		return ctx.JSON(http.StatusBadRequest, json.RawMessage(`{"error": "Invalid request body"}`))
+		return ctx.JSON(http.StatusBadRequest, json.RawMessage(`{"error": "Invalid request"}`))
 	}
 
 	validating := validator.New()
 	if err := validating.Struct(productFilter); err != nil {
-		return ctx.JSON(http.StatusBadRequest, json.RawMessage(`{"error": "Invalid request body"}`))
+		return ctx.JSON(http.StatusBadRequest, json.RawMessage(`{"error": "Invalid request"}`))
 	}
 
 	products, err := controller.productService.GetProducts(productFilter)
@@ -78,7 +78,7 @@ func (controller *productControllerImpl) UpdateProduct(ctx echo.Context) error {
 
 	var product *model.Product
 	if err := ctx.Bind(&product); err != nil {
-		return ctx.JSON(http.StatusBadRequest, json.RawMessage(`{"error": "Invalid request body"}`))
+		return ctx.JSON(http.StatusBadRequest, json.RawMessage(`{"error": "Invalid request"}`))
 	}
 
 	_, err = controller.productService.UpdateProduct(id, product)
@@ -115,7 +115,7 @@ func (controller *productControllerImpl) PurchaseProduct(ctx echo.Context) error
 
 	requestBody := new(model.ProductPurchaseRequest)
 	if err := ctx.Bind(requestBody); err != nil {
-		return ctx.JSON(http.StatusBadRequest, json.RawMessage(`{"error": "Invalid request body"}`))
+		return ctx.JSON(http.StatusBadRequest, json.RawMessage(`{"error": "Invalid request"}`))
 	}
 
 	product, err := controller.productService.PurchaseProduct(id, uint(requestBody.PaymentAmount))

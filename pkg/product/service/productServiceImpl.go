@@ -24,6 +24,7 @@ func (p *productServiceImpl) CreateProduct(product *model.ProductCreateRequest) 
 		Name:  product.Name,
 		Price: product.Price,
 		Amount: product.Amount,
+		Category: product.Category,
 	}
 
 	createdProductEntity, err := p.productRepository.CreateProduct(productEntity)
@@ -36,6 +37,7 @@ func (p *productServiceImpl) CreateProduct(product *model.ProductCreateRequest) 
 		Name:  createdProductEntity.Name,
 		Price: createdProductEntity.Price,
 		Amount: createdProductEntity.Amount,
+		Category: createdProductEntity.Category,
 	}, nil
 }
 
@@ -76,7 +78,7 @@ func (p *productServiceImpl) GetProductByID(id int) (*model.Product, error) {
 
 func (p *productServiceImpl) UpdateProduct(id int, product *model.Product) (*model.Product, error) {
 	productEntity := &entities.Product{
-		ID:    product.ID,
+		ID:    id,
 		Name:  product.Name,
 		Price: product.Price,
 		Amount: product.Amount,
@@ -108,11 +110,11 @@ func (p *productServiceImpl) PurchaseProduct(id int, paymentAmount uint) (*model
 	}
 
 	if product.Amount == 0 {
-		return &model.ProductPurchaseResponse{}, err
+		return &model.ProductPurchaseResponse{}, &exception.ProductOutOfStock{}
 	}
 
 	if product.Price > paymentAmount {
-		return &model.ProductPurchaseResponse{}, err
+		return &model.ProductPurchaseResponse{}, &exception.InsufficientMoney{}
 	}
 
 	p.productRepository.PurchaseProduct(id)

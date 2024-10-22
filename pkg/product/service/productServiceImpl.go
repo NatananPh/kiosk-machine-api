@@ -1,7 +1,11 @@
 package service
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/NatananPh/kiosk-machine-api/entities"
+	"github.com/NatananPh/kiosk-machine-api/pkg/custom"
 	"github.com/NatananPh/kiosk-machine-api/pkg/product/model"
 	"github.com/NatananPh/kiosk-machine-api/pkg/product/repository"
 )
@@ -36,8 +40,8 @@ func (p *productServiceImpl) CreateProduct(product model.ProductCreateRequest) (
 	}, nil
 }
 
-func (p *productServiceImpl) GetProducts() ([]model.Product, error) {
-	products, err := p.productRepository.GetProducts()
+func (p *productServiceImpl) GetProducts(filter model.ProductFilter) ([]model.Product, error) {
+	products, err := p.productRepository.GetProducts(filter)
 	if err != nil {
 		return nil, err
 	}
@@ -49,6 +53,7 @@ func (p *productServiceImpl) GetProducts() ([]model.Product, error) {
 			Name:  product.Name,
 			Price: product.Price,
 			Amount: product.Amount,
+			Category: product.Category,
 		})
 	}
 
@@ -92,4 +97,42 @@ func (p *productServiceImpl) UpdateProduct(id int, product model.Product) (model
 
 func (p *productServiceImpl) DeleteProduct(id int) error {
 	return p.productRepository.DeleteProduct(id)
+}
+
+func (p *productServiceImpl) PurchaseProduct(id int, paymentAmount uint) (model.ProductPurchaseResponse, error) {
+	product, err := p.productRepository.GetProductByID(id)
+	if err != nil {
+		return model.ProductPurchaseResponse{}, err
+	}
+
+	if product.Amount == 0 {
+		return model.ProductPurchaseResponse{}, custom.Error(nil, http.StatusBadRequest, "Product is out of stock")
+	}
+
+	if product.Price > paymentAmount {
+		return model.ProductPurchaseResponse{}, custom.Error(nil, http.StatusBadRequest, "Payment amount is not enough")
+	}
+
+	p.productRepository.PurchaseProduct(id)
+	change := paymentAmount - product.Price
+	changeDetails := calculateChange(change)
+
+	return model.ProductPurchaseResponse{
+		ProductID: id,
+		Change : changeDetails,
+	}, nil
+}
+
+func calculateChange(change uint) map[string]int {
+    denominations := []uint{1000, 500, 100, 50, 20, 10, 5, 1}
+    changeDetails := make(map[string]int)
+
+    for _, denomination := range denominations {
+        if change >= denomination {
+			changeDetails[strconv.Itoa(int(denomination))] = int(change / denomination)
+            change %= denomination
+        }
+    }
+
+    return changeDetails
 }

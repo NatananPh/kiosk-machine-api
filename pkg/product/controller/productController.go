@@ -8,4 +8,5 @@ type ProductController interface {
 	GetProductByID(ctx echo.Context) error
 	UpdateProduct(ctx echo.Context) error
 	DeleteProduct(ctx echo.Context) error
+	PurchaseProduct(ctx echo.Context) error
 }

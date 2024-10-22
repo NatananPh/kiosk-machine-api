@@ -7,6 +7,7 @@ import (
 	"github.com/NatananPh/kiosk-machine-api/pkg/custom"
 	"github.com/NatananPh/kiosk-machine-api/pkg/product/model"
 	"github.com/NatananPh/kiosk-machine-api/pkg/product/service"
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
 
@@ -34,7 +35,17 @@ func (controller *productControllerImpl) CreateProduct(ctx echo.Context) error {
 }
 
 func (controller *productControllerImpl) GetProducts(ctx echo.Context) error {
-	products, err := controller.productService.GetProducts()
+	productFilter := new(model.ProductFilter)
+	if err := ctx.Bind(productFilter); err != nil {
+		return custom.Error(ctx, http.StatusBadRequest, err.Error())
+	}
+
+	validating := validator.New()
+	if err := validating.Struct(productFilter); err != nil {
+		return custom.Error(ctx, http.StatusBadRequest, err.Error())
+	}
+
+	products, err := controller.productService.GetProducts(*productFilter)
 	if err != nil {
 		return custom.Error(ctx, http.StatusInternalServerError, err.Error())
 	}
@@ -83,4 +94,22 @@ func (controller *productControllerImpl) DeleteProduct(ctx echo.Context) error {
 		return custom.Error(ctx, http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, json.RawMessage(`{"message": "Product deleted"}`))
+}
+
+func (controller *productControllerImpl) PurchaseProduct(ctx echo.Context) error {
+	id, err := custom.GetParamInt(ctx, "id")
+	if err != nil {
+		return custom.Error(ctx, http.StatusBadRequest, err.Error())
+	}
+
+	requestBody := new(model.ProductPurchaseRequest)
+	if err := ctx.Bind(requestBody); err != nil {
+		return ctx.JSON(http.StatusBadRequest, json.RawMessage(`{"error": "Invalid request body"}`))
+	}
+
+	product, err := controller.productService.PurchaseProduct(id, uint(requestBody.PaymentAmount))
+	if err != nil {
+		return custom.Error(ctx, http.StatusInternalServerError, err.Error())
+	}
+	return ctx.JSON(http.StatusOK, product)
 }

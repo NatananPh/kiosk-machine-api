@@ -7,6 +7,7 @@ type Product struct {
 	Name      string    `gorm:"type:varchar(255);not null"`
 	Price     uint      `gorm:"not null"`
 	Amount    uint      `gorm:"not null"`
+	Category  string    `gorm:"type:varchar(255);not null"`
 	CreatedAt time.Time `gorm:"not null;autoCreateTime"`
 	UpdatedAt time.Time `gorm:"not null;autoUpdateTime"`
 }

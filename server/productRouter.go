@@ -16,6 +16,9 @@ func (s *echoServer) registerProductRoutes() {
 	router.GET("", productController.GetProducts)
 	router.GET("/:id", productController.GetProductByID)
 
+	authMiddleware := middleware.AuthMiddleware()
+	router.POST("/:id/purchase", productController.PurchaseProduct, authMiddleware)
+
 	adminMiddleware := middleware.RoleBasedMiddleware()
 	router.POST("", productController.CreateProduct, adminMiddleware)
 	router.PUT("/:id", productController.UpdateProduct, adminMiddleware)

@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
 	"strings"
 
@@ -37,8 +36,7 @@ func RoleBasedMiddleware() echo.MiddlewareFunc {
 			}
 
 			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-				log.Println("Token claims:", claims)
-
+				
 				if isAdmin, ok := claims["admin"].(bool); !ok || !isAdmin {
 					return c.JSON(http.StatusForbidden, map[string]string{
 						"message": "Forbidden: Admin access required",

@@ -42,42 +42,53 @@ func (p *productRepositoryImpl) GetProducts(filter *model.ProductFilter) ([]*ent
 	return products, nil
 }
 
-func (p *productRepositoryImpl) GetProductByID(id int) (entities.Product, error) {
-	var product entities.Product
+func (p *productRepositoryImpl) GetProductByID(id int) (*entities.Product, error) {
+	var product *entities.Product
 
 	if err := p.db.First(&product, id).Error; err != nil {
-		return entities.Product{}, err
+		return &entities.Product{}, err
 	}
 	return product, nil
 }
 
-func (p *productRepositoryImpl) UpdateProduct(id int, product entities.Product) (entities.Product, error) {
-	if err := p.db.Model(&entities.Product{}).Where("id = ?", id).Updates(product).Error; err != nil {
-		return entities.Product{}, err
+func (p *productRepositoryImpl) UpdateProduct(id int, product *entities.Product) (*entities.Product, error) {
+	result := p.db.Model(&entities.Product{}).Where("id = ?", id).Updates(product)
+	if err := result.Error; err != nil {
+		return &entities.Product{}, err
 	}
+
+	if result.RowsAffected == 0 {
+		return &entities.Product{}, &exception.ProductNotFound{}
+	}
+
 	return product, nil
 }
 
 func (p *productRepositoryImpl) DeleteProduct(id int) error {
-	if err := p.db.Delete(&entities.Product{}, id).Error; err != nil {
+	result := p.db.Delete(&entities.Product{}, id)
+	if err := result.Error; err != nil {
 		return err
+	}
+
+	if result.RowsAffected == 0 {
+		return &exception.ProductNotFound{}
 	}
 	return nil
 }
 
-func (p *productRepositoryImpl) PurchaseProduct(id int) (entities.Product, error) {
-	var product entities.Product
+func (p *productRepositoryImpl) PurchaseProduct(id int) (*entities.Product, error) {
+	var product *entities.Product
 
 	if err := p.db.First(&product, id).Error; err != nil {
-		return entities.Product{}, err
+		return &entities.Product{}, err
 	}
 
 	if product.Amount == 0 {
-		return entities.Product{}, &exception.ProductPurchasing{}
+		return &entities.Product{}, &exception.ProductPurchasing{}
 	}
 	product.Amount -= 1
 	if err := p.db.Save(&product).Error; err != nil {
-		return entities.Product{}, err
+		return &entities.Product{}, err
 	}
 	return product, nil
 }

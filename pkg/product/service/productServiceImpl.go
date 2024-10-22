@@ -1,11 +1,9 @@
 package service
 
 import (
-	"net/http"
 	"strconv"
 
 	"github.com/NatananPh/kiosk-machine-api/entities"
-	"github.com/NatananPh/kiosk-machine-api/pkg/custom"
 	"github.com/NatananPh/kiosk-machine-api/pkg/product/model"
 	"github.com/NatananPh/kiosk-machine-api/pkg/product/repository"
 )
@@ -71,15 +69,17 @@ func (p *productServiceImpl) GetProductByID(id int) (*model.Product, error) {
 		Name:  product.Name,
 		Price: product.Price,
 		Amount: product.Amount,
+		Category: product.Category,
 	}, nil
 }
 
 func (p *productServiceImpl) UpdateProduct(id int, product *model.Product) (*model.Product, error) {
-	productEntity := entities.Product{
+	productEntity := &entities.Product{
 		ID:    product.ID,
 		Name:  product.Name,
 		Price: product.Price,
 		Amount: product.Amount,
+		Category: product.Category,
 	}
 
 	updatedProductEntity, err := p.productRepository.UpdateProduct(id, productEntity)
@@ -92,6 +92,7 @@ func (p *productServiceImpl) UpdateProduct(id int, product *model.Product) (*mod
 		Name:  updatedProductEntity.Name,
 		Price: updatedProductEntity.Price,
 		Amount: updatedProductEntity.Amount,
+		Category: updatedProductEntity.Category,
 	}, nil
 }
 
@@ -106,11 +107,11 @@ func (p *productServiceImpl) PurchaseProduct(id int, paymentAmount uint) (*model
 	}
 
 	if product.Amount == 0 {
-		return &model.ProductPurchaseResponse{}, custom.Error(nil, http.StatusBadRequest, "Product is out of stock")
+		return &model.ProductPurchaseResponse{}, err
 	}
 
 	if product.Price > paymentAmount {
-		return &model.ProductPurchaseResponse{}, custom.Error(nil, http.StatusBadRequest, "Payment amount is not enough")
+		return &model.ProductPurchaseResponse{}, err
 	}
 
 	p.productRepository.PurchaseProduct(id)

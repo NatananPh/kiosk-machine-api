@@ -54,3 +54,38 @@ func RoleBasedMiddleware() echo.MiddlewareFunc {
 		}
 	}
 }
+
+func AuthMiddleware() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			authHeader := c.Request().Header.Get("Authorization")
+			if authHeader == "" {
+				return c.JSON(http.StatusUnauthorized, map[string]string{
+					"message": "Unauthorized: No token provided",
+				})
+			}
+			tokenString := strings.TrimSpace(strings.Replace(authHeader, "Bearer", "", 1))
+
+			token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+					return nil, echo.NewHTTPError(http.StatusUnauthorized, "Invalid token signing method")
+				}
+				return secretKey, nil
+			})
+
+			if err != nil || !token.Valid {
+				return c.JSON(http.StatusUnauthorized, map[string]string{
+					"message": "Unauthorized: Invalid token",
+				})
+			}
+
+			if _, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+				return next(c)
+			}
+
+			return c.JSON(http.StatusUnauthorized, map[string]string{
+				"message": "Unauthorized: Invalid token claims",
+			})
+		}
+	}
+}

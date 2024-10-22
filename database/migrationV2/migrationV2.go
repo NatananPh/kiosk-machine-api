@@ -43,12 +43,12 @@ func addUser(tx *gorm.DB) error {
 	var users = []entities.User{
 		{
 			Username: "admin",
-			Password: "admin",
+			Password: "$2a$10$Tou3DwmFhYmnYj/CUAiBoeUxxUcy5mK150PXMY7Kj02x2PWAgQDye",
 			RoleID:   1,
 		},
 		{
 			Username: "user",
-			Password: "user",
+			Password: "$2a$10$f.wBU4dX4hSteATgSrSr7uYnP4LEoM6Ut8iUotK0Mx79OkLlfVOtK",
 			RoleID:   2,
 		},
 	}
@@ -62,26 +62,37 @@ func addProduct(tx *gorm.DB) error {
 			Name:   "Coca Cola",
 			Price:  20,
 			Amount: 10,
+			Category: "Drink",
 		},
 		{
 			Name:   "Pepsi",
 			Price:  20,
 			Amount: 10,
+			Category: "Drink",
 		},
 		{
 			Name:   "Fanta",
 			Price:  20,
 			Amount: 10,
+			Category: "Drink",
 		},
 		{
 			Name:   "Sprite",
 			Price:  20,
 			Amount: 10,
+			Category: "Drink",
 		},	
 		{
 			Name:   "Lay",
 			Price:  20,
 			Amount: 10,
+			Category: "Snack",
+		},
+		{
+			Name:   "Doritos",
+			Price:  20,
+			Amount: 10,
+			Category: "Snack",
 		},
 	}
 	tx.CreateInBatches(products, len(products))

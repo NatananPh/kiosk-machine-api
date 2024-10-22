@@ -5,5 +5,5 @@ import (
 )
 
 type AuthRepository interface {
-	GetAuthUser(username string, password string) (entities.User, error)
+	GetAuthUser(username string) (entities.User, error)
 }

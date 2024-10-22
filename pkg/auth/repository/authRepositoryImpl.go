@@ -15,10 +15,10 @@ func NewAuthRepository(db *gorm.DB) AuthRepository {
 	}
 }
 
-func (a *AuthRepositoryImpl) GetAuthUser(username string, password string) (entities.User, error) {
+func (a *AuthRepositoryImpl) GetAuthUser(username string) (entities.User, error) {
 	var user entities.User
 
-	if err := a.db.Where("username = ? AND password = ?", username, password).First(&user).Error; err != nil {
+	if err := a.db.Where("username = ?", username).First(&user).Error; err != nil {
 		return entities.User{}, err
 	}
 	return user, nil

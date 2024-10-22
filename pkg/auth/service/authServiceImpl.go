@@ -1,10 +1,12 @@
 package service
 
 import (
+	"log"
 	"time"
 
 	"github.com/NatananPh/kiosk-machine-api/pkg/auth/repository"
 	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthServiceImpl struct {
@@ -24,11 +26,15 @@ func NewAuthService(authRepository repository.AuthRepository) AuthService {
 }
 
 func (a *AuthServiceImpl) Login(username, password string) (string, error) {
-	user, err := a.AuthRepository.GetAuthUser(username, password)
+	user, err := a.AuthRepository.GetAuthUser(username)
 	if err != nil {
 		return "", err
 	}
-
+	err = verifyPassword(user.Password, password)
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
 	claims := &jwtCustomClaims{
 		user.Username,
 		user.RoleID == 1,
@@ -44,4 +50,8 @@ func (a *AuthServiceImpl) Login(username, password string) (string, error) {
 	}
 
 	return tokenString, nil
+}
+
+func verifyPassword(hashedPassword, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }

@@ -6,8 +6,8 @@ import (
 )
 
 type ProductRepository interface {
-	CreateProduct(product entities.Product) (entities.Product, error)
-	GetProducts(filter model.ProductFilter) ([]entities.Product, error)
+	CreateProduct(product *entities.Product) (*entities.Product, error)
+	GetProducts(filter *model.ProductFilter) ([]*entities.Product, error)
 	GetProductByID(id int) (entities.Product, error)
 	UpdateProduct(id int, product entities.Product) (entities.Product, error)
 	DeleteProduct(id int) error

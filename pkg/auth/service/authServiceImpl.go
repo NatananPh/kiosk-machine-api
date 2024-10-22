@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/NatananPh/kiosk-machine-api/config"
 	"github.com/NatananPh/kiosk-machine-api/pkg/auth/repository"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -39,12 +40,12 @@ func (a *AuthServiceImpl) Login(username, password string) (string, error) {
 		user.Username,
 		user.RoleID == 1,
 		jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 5)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * time.Duration(config.GetConfig().Auth.TokenDuration))),
 		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte("secret"))
+	tokenString, err := token.SignedString([]byte(config.GetConfig().Auth.Secret))
 	if err != nil {
 		return "", err
 	}

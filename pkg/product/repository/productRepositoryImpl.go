@@ -17,21 +17,21 @@ func NewProductRepository(db *gorm.DB) ProductRepository {
 	}
 }
 
-func (p *productRepositoryImpl) CreateProduct(product entities.Product) (entities.Product, error) {
+func (p *productRepositoryImpl) CreateProduct(product *entities.Product) (*entities.Product, error) {
 	if err := p.db.Create(&product).Error; err != nil {
-		return entities.Product{}, err
+		return &entities.Product{}, err
 	}
 	return product, nil
 }
 
-func (p *productRepositoryImpl) GetProducts(filter model.ProductFilter) ([]entities.Product, error) {
-	var products []entities.Product
+func (p *productRepositoryImpl) GetProducts(filter *model.ProductFilter) ([]*entities.Product, error) {
+	var products []*entities.Product
 	
 	if err := p.db.Find(&products).Error; err != nil {
 		return nil, err
 	}
 	if filter.Category != "" {
-		var filteredProducts []entities.Product
+		var filteredProducts []*entities.Product
 		for _, product := range products {
 			if product.Category == filter.Category {
 				filteredProducts = append(filteredProducts, product)

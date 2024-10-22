@@ -27,7 +27,7 @@ func (controller *productControllerImpl) CreateProduct(ctx echo.Context) error {
 		return custom.Error(ctx, http.StatusBadRequest, err.Error())
 	}
 
-	createdProduct, err := controller.productService.CreateProduct(product)
+	createdProduct, err := controller.productService.CreateProduct(&product)
 	if err != nil {
 		return custom.Error(ctx, http.StatusInternalServerError, err.Error())
 	}
@@ -45,7 +45,7 @@ func (controller *productControllerImpl) GetProducts(ctx echo.Context) error {
 		return custom.Error(ctx, http.StatusBadRequest, err.Error())
 	}
 
-	products, err := controller.productService.GetProducts(*productFilter)
+	products, err := controller.productService.GetProducts(productFilter)
 	if err != nil {
 		return custom.Error(ctx, http.StatusInternalServerError, err.Error())
 	}
@@ -71,7 +71,7 @@ func (controller *productControllerImpl) UpdateProduct(ctx echo.Context) error {
 		return custom.Error(ctx, http.StatusBadRequest, err.Error())
 	}
 
-	var product model.Product
+	var product *model.Product
 	if err := ctx.Bind(&product); err != nil {
 		return custom.Error(ctx, http.StatusBadRequest, err.Error())
 	}

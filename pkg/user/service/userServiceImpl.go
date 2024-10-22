@@ -15,14 +15,14 @@ func NewUserService(userRepository repository.UserRepository) UserService {
 	}
 }
 
-func (us *UserServiceImpl) GetUsers() ([]model.User, error) {
+func (us *UserServiceImpl) GetUsers() ([]*model.User, error) {
 	users, err := us.userRepository.GetUsers()
 	if err != nil {
 		return nil, err
 	}
-	var modelUsers []model.User
+	var modelUsers []*model.User
 	for _, user := range users {
-		modelUsers = append(modelUsers, model.User{
+		modelUsers = append(modelUsers, &model.User{
 			ID:    user.ID,
 			Username:  user.Username,
 			Password: user.Password,

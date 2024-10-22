@@ -20,8 +20,8 @@ func NewProductService(productRepository repository.ProductRepository) ProductSe
 	}
 }
 
-func (p *productServiceImpl) CreateProduct(product model.ProductCreateRequest) (model.Product, error) {
-	productEntity := entities.Product{
+func (p *productServiceImpl) CreateProduct(product *model.ProductCreateRequest) (*model.Product, error) {
+	productEntity := &entities.Product{
 		Name:  product.Name,
 		Price: product.Price,
 		Amount: product.Amount,
@@ -29,10 +29,10 @@ func (p *productServiceImpl) CreateProduct(product model.ProductCreateRequest) (
 
 	createdProductEntity, err := p.productRepository.CreateProduct(productEntity)
 	if err != nil {
-		return model.Product{}, err
+		return &model.Product{}, err
 	}
 
-	return model.Product{
+	return &model.Product{
 		ID:    createdProductEntity.ID,
 		Name:  createdProductEntity.Name,
 		Price: createdProductEntity.Price,
@@ -40,15 +40,15 @@ func (p *productServiceImpl) CreateProduct(product model.ProductCreateRequest) (
 	}, nil
 }
 
-func (p *productServiceImpl) GetProducts(filter model.ProductFilter) ([]model.Product, error) {
+func (p *productServiceImpl) GetProducts(filter *model.ProductFilter) ([]*model.Product, error) {
 	products, err := p.productRepository.GetProducts(filter)
 	if err != nil {
 		return nil, err
 	}
 
-	var productModels []model.Product
+	var productModels []*model.Product
 	for _, product := range products {
-		productModels = append(productModels, model.Product{
+		productModels = append(productModels, &model.Product{
 			ID:    product.ID,
 			Name:  product.Name,
 			Price: product.Price,
@@ -60,13 +60,13 @@ func (p *productServiceImpl) GetProducts(filter model.ProductFilter) ([]model.Pr
 	return productModels, nil
 }
 
-func (p *productServiceImpl) GetProductByID(id int) (model.Product, error) {
+func (p *productServiceImpl) GetProductByID(id int) (*model.Product, error) {
 	product, err := p.productRepository.GetProductByID(id)
 	if err != nil {
-		return model.Product{}, err
+		return &model.Product{}, err
 	}
 
-	return model.Product{
+	return &model.Product{
 		ID:    product.ID,
 		Name:  product.Name,
 		Price: product.Price,
@@ -74,7 +74,7 @@ func (p *productServiceImpl) GetProductByID(id int) (model.Product, error) {
 	}, nil
 }
 
-func (p *productServiceImpl) UpdateProduct(id int, product model.Product) (model.Product, error) {
+func (p *productServiceImpl) UpdateProduct(id int, product *model.Product) (*model.Product, error) {
 	productEntity := entities.Product{
 		ID:    product.ID,
 		Name:  product.Name,
@@ -84,10 +84,10 @@ func (p *productServiceImpl) UpdateProduct(id int, product model.Product) (model
 
 	updatedProductEntity, err := p.productRepository.UpdateProduct(id, productEntity)
 	if err != nil {
-		return model.Product{}, err
+		return &model.Product{}, err
 	}
 
-	return model.Product{
+	return &model.Product{
 		ID:    updatedProductEntity.ID,
 		Name:  updatedProductEntity.Name,
 		Price: updatedProductEntity.Price,
@@ -99,25 +99,25 @@ func (p *productServiceImpl) DeleteProduct(id int) error {
 	return p.productRepository.DeleteProduct(id)
 }
 
-func (p *productServiceImpl) PurchaseProduct(id int, paymentAmount uint) (model.ProductPurchaseResponse, error) {
+func (p *productServiceImpl) PurchaseProduct(id int, paymentAmount uint) (*model.ProductPurchaseResponse, error) {
 	product, err := p.productRepository.GetProductByID(id)
 	if err != nil {
-		return model.ProductPurchaseResponse{}, err
+		return &model.ProductPurchaseResponse{}, err
 	}
 
 	if product.Amount == 0 {
-		return model.ProductPurchaseResponse{}, custom.Error(nil, http.StatusBadRequest, "Product is out of stock")
+		return &model.ProductPurchaseResponse{}, custom.Error(nil, http.StatusBadRequest, "Product is out of stock")
 	}
 
 	if product.Price > paymentAmount {
-		return model.ProductPurchaseResponse{}, custom.Error(nil, http.StatusBadRequest, "Payment amount is not enough")
+		return &model.ProductPurchaseResponse{}, custom.Error(nil, http.StatusBadRequest, "Payment amount is not enough")
 	}
 
 	p.productRepository.PurchaseProduct(id)
 	change := paymentAmount - product.Price
 	changeDetails := calculateChange(change)
 
-	return model.ProductPurchaseResponse{
+	return &model.ProductPurchaseResponse{
 		ProductID: id,
 		Change : changeDetails,
 	}, nil

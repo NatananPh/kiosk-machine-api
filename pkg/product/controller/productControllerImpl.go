@@ -120,7 +120,17 @@ func (controller *productControllerImpl) PurchaseProduct(ctx echo.Context) error
 
 	product, err := controller.productService.PurchaseProduct(id, uint(requestBody.PaymentAmount))
 	if err != nil {
+		if errors.Is(err, &exception.ProductNotFound{}) {
+			return ctx.JSON(http.StatusNotFound, json.RawMessage(`{"error": "Product not found"}`))
+		}
+		if errors.Is(err, &exception.InsufficientMoney{}) {
+			return ctx.JSON(http.StatusBadRequest, json.RawMessage(`{"error": "Insufficient money"}`))
+		}
+		if errors.Is(err, &exception.ProductOutOfStock{}) {
+			return ctx.JSON(http.StatusBadRequest, json.RawMessage(`{"error": "Product out of stock"}`))
+		}
 		return ctx.JSON(http.StatusInternalServerError, json.RawMessage(`{"error": "Internal server error"}`))
+	
 	}
 	return ctx.JSON(http.StatusOK, product)
 }

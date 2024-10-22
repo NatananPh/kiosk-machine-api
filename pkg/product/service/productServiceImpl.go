@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/NatananPh/kiosk-machine-api/entities"
+	"github.com/NatananPh/kiosk-machine-api/pkg/product/exception"
 	"github.com/NatananPh/kiosk-machine-api/pkg/product/model"
 	"github.com/NatananPh/kiosk-machine-api/pkg/product/repository"
 )
@@ -61,7 +62,7 @@ func (p *productServiceImpl) GetProducts(filter *model.ProductFilter) ([]*model.
 func (p *productServiceImpl) GetProductByID(id int) (*model.Product, error) {
 	product, err := p.productRepository.GetProductByID(id)
 	if err != nil {
-		return &model.Product{}, err
+		return &model.Product{}, &exception.ProductNotFound{}
 	}
 
 	return &model.Product{
@@ -103,7 +104,7 @@ func (p *productServiceImpl) DeleteProduct(id int) error {
 func (p *productServiceImpl) PurchaseProduct(id int, paymentAmount uint) (*model.ProductPurchaseResponse, error) {
 	product, err := p.productRepository.GetProductByID(id)
 	if err != nil {
-		return &model.ProductPurchaseResponse{}, err
+		return &model.ProductPurchaseResponse{}, &exception.ProductNotFound{}
 	}
 
 	if product.Amount == 0 {

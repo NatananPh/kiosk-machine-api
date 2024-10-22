@@ -2,9 +2,11 @@ package controller
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/NatananPh/kiosk-machine-api/pkg/custom"
+	"github.com/NatananPh/kiosk-machine-api/pkg/product/exception"
 	"github.com/NatananPh/kiosk-machine-api/pkg/product/model"
 	"github.com/NatananPh/kiosk-machine-api/pkg/product/service"
 	"github.com/go-playground/validator/v10"
@@ -60,7 +62,10 @@ func (controller *productControllerImpl) GetProductByID(ctx echo.Context) error 
 
 	product, err := controller.productService.GetProductByID(id)
 	if err != nil {
-		return ctx.JSON(http.StatusNotFound, json.RawMessage(`{"error": "Product not found"}`))
+		if errors.Is(err, &exception.ProductNotFound{}) {
+			return ctx.JSON(http.StatusNotFound, json.RawMessage(`{"error": "Product not found"}`))
+		}
+		return ctx.JSON(http.StatusInternalServerError, json.RawMessage(`{"error": "Internal server error"}`))
 	}
 	return ctx.JSON(http.StatusOK, product)
 }
@@ -78,7 +83,10 @@ func (controller *productControllerImpl) UpdateProduct(ctx echo.Context) error {
 
 	_, err = controller.productService.UpdateProduct(id, product)
 	if err != nil {
-		return ctx.JSON(http.StatusNotFound, json.RawMessage(`{"error": "Product not found"}`))
+		if errors.Is(err, &exception.ProductNotFound{}) {
+			return ctx.JSON(http.StatusNotFound, json.RawMessage(`{"error": "Product not found"}`))
+		}
+		return ctx.JSON(http.StatusInternalServerError, json.RawMessage(`{"error": "Internal server error"}`))
 	}
 	return ctx.JSON(http.StatusOK, json.RawMessage(`{"message": "Product updated"}`))
 }
@@ -91,7 +99,10 @@ func (controller *productControllerImpl) DeleteProduct(ctx echo.Context) error {
 
 	err = controller.productService.DeleteProduct(id)
 	if err != nil {
-		return ctx.JSON(http.StatusNotFound, json.RawMessage(`{"error": "Product not found"}`))
+		if errors.Is(err, &exception.ProductNotFound{}) {
+			return ctx.JSON(http.StatusNotFound, json.RawMessage(`{"error": "Product not found"}`))
+		}
+		return ctx.JSON(http.StatusInternalServerError, json.RawMessage(`{"error": "Internal server error"}`))
 	}
 	return ctx.JSON(http.StatusOK, json.RawMessage(`{"message": "Product deleted"}`))
 }

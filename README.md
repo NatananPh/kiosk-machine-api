@@ -44,6 +44,8 @@ The project implements a REST API for a kiosk machine using the Echo framework i
   }
   ```
 - **Response (success) 200: we will use token for ensuring that users cannot access admin API**
+  ![image](https://github.com/user-attachments/assets/a58313cb-5ecb-4143-a4d7-33624cfbaeb2)
+
   ```json
   {
     "token": "eyJhbGciOiJIUzI1NiIsInR5...."
@@ -177,4 +179,34 @@ The project implements a REST API for a kiosk machine using the Echo framework i
       }
   ```
 ### 7. Purchase product API
-
+- **Endpoint:** `localhost:8080/v1/products/{id}/purchase
+- **Method:** `POST
+- **Request Body**
+  ``` json
+   {
+       "payment_amount": 100
+   }
+  ```
+- **Response (success) 200**
+  ``` json
+   {
+       "product_id": 2,
+       "change": {
+           "10": 1,
+           "20": 1,
+           "50": 1
+       }
+   }
+  ```
+- **Response (failed) 404: product not found**
+  ```json
+   {
+       "error": "Product not found"
+   }
+  ```
+  - **Response (failed) 400: Invalid request**
+  ``` json
+      {
+       "error": "Invalid request"
+      }
+  ```

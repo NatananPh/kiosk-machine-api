@@ -261,3 +261,9 @@ The project implements a REST API for a kiosk machine using the Echo framework i
     "error": "Product out of stock"
   }
   ```
+
+## Postman Collection and ENV
+
+You can download the Postman collection and environment file from the following Google Drive link:
+
+[Postman Collection and ENV](https://drive.google.com/file/d/1tOsTMOVLNfz5dhFCdQWuB6ANDVLuCnvD/view?usp=sharing)

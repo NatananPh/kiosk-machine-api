@@ -56,9 +56,25 @@ The project implements a REST API for a kiosk machine using the Echo framework i
   }
   ```
 ### 2. Get Products API
+- **Endpoint:** `localhost:8080/v1/products
+- **Method:** `GET`
+- We can add query parameters (category, page, linit) for filter and pagination
+- **Example Endpoint:** ```localhost:8080/v1/products?category=Snack&page=1&limit=1```
+  - **Response (success)**
+  ```json
+  [
+    {
+        "id": 5,
+        "name": "Lay",
+        "price": 20,
+        "amount": 10,
+        "category": "Snack"
+    }
+   ]
+  ```
 ### 3. Get Product by id API
-### 2. Create product API
-### 2. Update product by id API
-### 2. Delete product by id API
-### 2. Purchase product API
+### 4. Create product API
+### 5. Update product by id API
+### 6. Delete product by id API
+### 7. Purchase product API
 

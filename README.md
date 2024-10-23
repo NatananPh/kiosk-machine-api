@@ -26,3 +26,11 @@ The project implements a REST API for a kiosk machine using the Echo framework i
    air
    ```
 ## Examples of API Usage
+### 1. Login API
+### 2. Get Products API
+### 3. Get Product by id API
+### 2. Create product API
+### 2. Update product by id API
+### 2. Delete product by id API
+### 2. Purchase product API
+

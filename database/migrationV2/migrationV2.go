@@ -101,9 +101,9 @@ func addProduct(tx *gorm.DB) error {
 
 func migrate(tx *gorm.DB) error {
 	migrations := []func(*gorm.DB) error{
+		roleMigration,
 		userMigration,
 		productMigration,
-		roleMigration,
 	}
 
 	for _, migration := range migrations {

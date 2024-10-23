@@ -20,7 +20,7 @@ func (controller *AuthControllerImpl) Login(ctx echo.Context) error {
 	var user model.User
 	if err := ctx.Bind(&user); err != nil {
 		return ctx.JSON(400, map[string]string{
-			"error": err.Error(),
+			"error": "invalid request body",
 		})
 	}
 	username := user.Username
@@ -28,7 +28,7 @@ func (controller *AuthControllerImpl) Login(ctx echo.Context) error {
 	token, err := controller.AuthService.Login(username, password)
 	if err != nil {
 		return ctx.JSON(400, map[string]string{
-			"error": err.Error(),
+			"error": "invalid username or password",
 		})
 	}
 	return ctx.JSON(200, map[string]string{

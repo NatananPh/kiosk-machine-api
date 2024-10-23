@@ -142,6 +142,12 @@ The project implements a REST API for a kiosk machine using the Echo framework i
     "error": "Invalid request"
   }
   ```
+- **Response (failed) 403: admin access required**
+  ```json
+  {
+    "message": "Forbidden: Admin access required"
+  }
+  ```
 
 ### 5. Update product by id API
 
@@ -174,6 +180,12 @@ The project implements a REST API for a kiosk machine using the Echo framework i
     "error": "Invalid request"
   }
   ```
+  - **Response (failed) 403: admin access required**
+  ```json
+  {
+    "message": "Forbidden: Admin access required"
+  }
+  ```
 
 ### 6. Delete product by id API
 
@@ -195,6 +207,12 @@ The project implements a REST API for a kiosk machine using the Echo framework i
   ```json
   {
     "error": "Invalid request"
+  }
+  ```
+  - **Response (failed) 403: admin access required**
+  ```json
+  {
+    "message": "Forbidden: Admin access required"
   }
   ```
 

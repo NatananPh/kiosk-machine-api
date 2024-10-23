@@ -5,17 +5,23 @@ The project implements a REST API for a kiosk machine using the Echo framework i
 
 ## Setup steps
 ### Start PostgreSQL on Docker
-1. Run docker compoose command below
+1. Run ```go mod tidy``` for Installing dependencies
+   
+   ```
+   go mod tidy
+   ```
+   
+3. Run docker compose-command below
    
    ```
    docker-compose -f .\docker-compose.yml up -d
    ```
-2. Run migration script and mocking data for testing
+4. Run migration script and mocking data for testing
    
    ```
    go run .\database\migrationV2\migrationV2.go
    ```
-3. Start server using air
+5. Start server using ```air```
    ```
    air
    ```

@@ -94,6 +94,12 @@ func addProduct(tx *gorm.DB) error {
 			Amount: 10,
 			Category: "Snack",
 		},
+		{
+			Name:   "TestOutOfStock",
+			Price:  20,
+			Amount: 0,
+			Category: "Snack",
+		},
 	}
 	tx.CreateInBatches(products, len(products))
 	return nil

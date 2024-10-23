@@ -43,13 +43,13 @@ The project implements a REST API for a kiosk machine using the Echo framework i
     "password": "user"
   }
   ```
-- **Response (success): we will use token for ensuring that users cannot access admin API**
+- **Response (success) 200: we will use token for ensuring that users cannot access admin API**
   ```json
   {
     "token": "eyJhbGciOiJIUzI1NiIsInR5...."
   }
   ```
-- **Response (failed)**
+- **Response (failed) 400**
   ```json
   {
      "error": "invalid username or password"
@@ -60,7 +60,7 @@ The project implements a REST API for a kiosk machine using the Echo framework i
 - **Method:** `GET`
 - We can add query parameters (category, page, linit) for filter and pagination
 - **Example Endpoint:** ```localhost:8080/v1/products?category=Snack&page=1&limit=1```
-  - **Response (success)**
+  - **Response (success) 200**
   ```json
   [
     {
@@ -73,8 +73,108 @@ The project implements a REST API for a kiosk machine using the Echo framework i
    ]
   ```
 ### 3. Get Product by id API
+- **Endpoint:** `localhost:8080/v1/products/{id}
+- **Method:** `GET`
+- **Response (success) 200**
+  ```json
+   {
+       "id": 3,
+       "name": "Fanta",
+       "price": 20,
+       "amount": 10,
+       "category": "Drink"
+   }
+  ```
+- **Response (failed) 404: product not found**
+  ```json
+   {
+       "error": "Product not found"
+   }
+  ```
 ### 4. Create product API
+- **Endpoint:** `localhost:8080/v1/products
+- **Method:** `POST`
+- **Request body**
+  ``` json
+  {
+    "name": "Testo",
+    "price": 25,
+    "amount": 100,
+    "category": "Snack"
+   }
+  ```
+- **Response (success) 201**
+  ``` json
+     {
+       "id": 8,
+       "name": "Testo",
+       "price": 25,
+       "amount": 100,
+       "category": "Snack"
+      }
+  ```
+- **Response (failed) 401: Invalid token**
+  ``` json
+     {
+       "message": "Unauthorized: Invalid token"
+     }
+  ```
+- **Response (failed) 400: Invalid request e.g. when price or amount is negative number**
+  ``` json
+      {
+       "error": "Invalid request"
+      }
+  ```
 ### 5. Update product by id API
+- **Endpoint:** `localhost:8080/v1/products/{id}
+- **Method:** `PUT`
+- **Request body**
+  ``` json
+     {
+       "name": "Spritess",
+       "price": 1000,
+       "amount": 10,
+       "category": "Drinkkk"
+   }
+  ```
+- **Response (success) 200**
+  ``` json
+     {
+       "message": "Product updated"
+     }
+  ```
+- **Response (failed) 404: product not found**
+  ```json
+   {
+       "error": "Product not found"
+   }
+  ```
+  - **Response (failed) 400: Invalid request e.g. id is not number (```/v1/products/abc```)**
+  ``` json
+      {
+       "error": "Invalid request"
+      }
+  ```
 ### 6. Delete product by id API
+- **Endpoint:** `localhost:8080/v1/products/{id}
+- **Method:** `DELETE`
+- **Response (success) 200**
+  ``` json
+     {
+       "message": "Product deleted"
+     }
+  ```
+- **Response (failed) 404: product not found**
+  ```json
+   {
+       "error": "Product not found"
+   }
+  ```
+  - **Response (failed) 400: Invalid request e.g. id is not number (```/v1/products/abc```)**
+  ``` json
+      {
+       "error": "Invalid request"
+      }
+  ```
 ### 7. Purchase product API
 

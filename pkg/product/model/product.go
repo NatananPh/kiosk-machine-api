@@ -16,6 +16,8 @@ type ProductCreateRequest struct {
 
 type ProductFilter struct {
 	Category string `query:"category" validate:"omitempty,max=64"`
+	Page     int    `query:"page" validate:"omitempty,gte=1"`
+	Limit    int    `query:"limit" validate:"omitempty,gte=1"`
 }
 
 type ProductPurchaseRequest struct {

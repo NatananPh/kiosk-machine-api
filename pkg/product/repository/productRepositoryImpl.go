@@ -26,19 +26,21 @@ func (p *productRepositoryImpl) CreateProduct(product *entities.Product) (*entit
 
 func (p *productRepositoryImpl) GetProducts(filter *model.ProductFilter) ([]*entities.Product, error) {
 	var products []*entities.Product
-	
-	if err := p.db.Find(&products).Error; err != nil {
+	query := p.db.Model(&entities.Product{})
+
+	if filter.Category != "" {
+		query = query.Where("category = ?", filter.Category)
+	}
+
+	if filter.Limit != 0 && filter.Page != 0 {
+		offset := filter.Limit * (filter.Page - 1)
+		query = query.Limit(filter.Limit).Offset(offset)
+	}
+
+	if err := query.Find(&products).Error; err != nil {
 		return nil, err
 	}
-	if filter.Category != "" {
-		var filteredProducts []*entities.Product
-		for _, product := range products {
-			if product.Category == filter.Category {
-				filteredProducts = append(filteredProducts, product)
-			}
-		}
-		return filteredProducts, nil
-	}
+
 	return products, nil
 }
 

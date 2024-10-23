@@ -210,3 +210,15 @@ The project implements a REST API for a kiosk machine using the Echo framework i
        "error": "Invalid request"
       }
   ```
+  - **Response (failed) 400: Invalid request (Insufficient money)**
+  ``` json
+   {
+       "error": "Insufficient money"
+   }
+  ```
+  - **Response (failed) 400: Invalid request (product out of stock)**
+  ``` json
+   {
+       "error": "Product out of stock"
+   }
+  ```

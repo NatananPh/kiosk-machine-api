@@ -27,6 +27,34 @@ The project implements a REST API for a kiosk machine using the Echo framework i
    ```
 ## Examples of API Usage
 ### 1. Login API
+- **Endpoint:** `localhost:8080/v1/auth/login
+- **Method:** `POST`
+- **Request Body for admin (success):**
+  ```json
+  {
+    "username": "admin",
+    "password": "admin"
+  }
+  ```
+- **Request Body for user (success):**
+  ```json
+  {
+    "username": "user",
+    "password": "user"
+  }
+  ```
+- **Response (success): we will use token for ensuring that users cannot access admin API**
+  ```json
+  {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5...."
+  }
+  ```
+- **Response (failed)**
+  ```json
+  {
+     "error": "invalid username or password"
+  }
+  ```
 ### 2. Get Products API
 ### 3. Get Product by id API
 ### 2. Create product API
